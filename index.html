@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <script type="module" crossorigin src="./assets/index-CUIxWLqS.js"></script>
+  <script type="module" crossorigin src="./assets/index-BlPz27Dr.js"></script>
   <link rel="stylesheet" crossorigin href="./assets/index-BRCLxMa3.css">
 </head>
 <body>
@@ -25,7 +25,7 @@
         </svg>
       </div>
       <h2>Drop Images or Folders Here</h2>
-      <p>Release to immediately process all image files</p>
+      <p>Release to process all image files automatically</p>
     </div>
   </div>
 
@@ -86,10 +86,6 @@
             Try Demo Images
           </button>
         </div>
-
-        <!-- Hidden inputs for file and directory selection -->
-        <input type="file" id="fileInput" multiple accept="image/*,.heic,.heif,.tiff,.tif,.svg,.avif,.webp,.bmp,.gif,.ico" style="display: none;" />
-        <input type="file" id="folderInput" webkitdirectory directory multiple style="display: none;" />
 
         <div class="supported-formats-row">
           <span class="fmt-tag active">PNG</span>
@@ -377,6 +373,10 @@
 
   <!-- Toast Notification Container -->
   <div id="toastContainer" class="toast-container"></div>
+
+  <!-- Isolated Hidden File and Directory Inputs -->
+  <input type="file" id="fileInput" multiple accept="image/*,.heic,.heif,.tiff,.tif,.svg,.avif,.webp,.bmp,.gif,.ico,.jpg,.jpeg,.png" style="display: none;" />
+  <input type="file" id="folderInput" webkitdirectory directory multiple style="display: none;" />
 
 </body>
 </html>
