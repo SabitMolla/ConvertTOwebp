@@ -1,0 +1,19 @@
+{
+  "name": "convert-to-webp",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "jszip": "^3.10.1",
+    "heic2any": "^0.0.4",
+    "utif": "^3.1.0"
+  },
+  "devDependencies": {
+    "vite": "^5.4.2"
+  }
+}

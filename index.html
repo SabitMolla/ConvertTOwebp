@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WebP Studio — Batch & Folder Image to WebP Converter</title>
+  <meta name="description" content="Ultra-fast, 100% client-side batch and folder image converter to next-gen WebP format. Supports PNG, JPG, HEIC, TIFF, SVG, GIF, AVIF, and preserves folder directories." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./src/style.css">
+</head>
+<body>
+  <div class="ambient-glow"></div>
+
+  <!-- Fullscreen Drag & Drop Overlay Indicator -->
+  <div id="windowDropOverlay" class="window-drop-overlay">
+    <div class="overlay-content">
+      <div class="overlay-icon">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2 2v-4"/>
+          <polyline points="17 8 12 3 7 8"/>
+          <line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+      </div>
+      <h2>Drop Images or Folders Here</h2>
+      <p>Release to immediately process all image files</p>
+    </div>
+  </div>
+
+  <main class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="brand-badge">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        <span>100% In-Browser & Private Conversion</span>
+      </div>
+      <h1 class="app-title">
+        Convert Images to <span class="gradient-text">WebP</span>
+      </h1>
+      <p class="app-subtitle">
+        Batch convert entire folders or multi-format image collections directly in your browser with zero server uploads and lightning performance.
+      </p>
+
+      <div class="feature-highlights">
+        <div class="feature-pill">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+          <span>Ultra-fast WebAssembly & Canvas</span>
+        </div>
+        <div class="feature-pill">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 8 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>
+          <span>Recursive Folder Tree Preservation</span>
+        </div>
+        <div class="feature-pill">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <span>Zero Server Uploads & 100% Privacy</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Upload Dropzone Card -->
+    <section class="upload-section">
+      <div id="dropzone" class="upload-card">
+        <div class="upload-icon-wrapper">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2 2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+        </div>
+        <h2 class="upload-title">Drag & Drop Images or Entire Folders Here</h2>
+        <p class="upload-desc">Drop image files or folders, paste from clipboard (Ctrl+V), or select below</p>
+
+        <div class="upload-actions">
+          <button type="button" id="btnSelectFiles" class="btn btn-primary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+            Choose Image Files
+          </button>
+          <button type="button" id="btnSelectFolder" class="btn btn-secondary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 8 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/></svg>
+            Upload Entire Folder
+          </button>
+          <button type="button" id="btnTryDemo" class="btn btn-demo" title="Load sample demo images instantly">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            Try Demo Images
+          </button>
+        </div>
+
+        <!-- Hidden inputs for file and directory selection -->
+        <input type="file" id="fileInput" multiple accept="image/*,.heic,.heif,.tiff,.tif,.svg,.avif,.webp,.bmp,.gif,.ico" style="display: none;" />
+        <input type="file" id="folderInput" webkitdirectory directory multiple style="display: none;" />
+
+        <div class="supported-formats-row">
+          <span class="fmt-tag active">PNG</span>
+          <span class="fmt-tag active">JPG / JPEG</span>
+          <span class="fmt-tag active">HEIC / HEIF</span>
+          <span class="fmt-tag active">TIFF / TIF</span>
+          <span class="fmt-tag active">SVG</span>
+          <span class="fmt-tag active">GIF</span>
+          <span class="fmt-tag active">AVIF</span>
+          <span class="fmt-tag active">BMP</span>
+          <span class="fmt-tag active">WEBP</span>
+          <span class="fmt-tag active">ICO</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Conversion Settings Accordion -->
+    <section class="settings-section">
+      <div id="settingsCard" class="settings-card">
+        <div id="settingsToggle" class="settings-header">
+          <div class="settings-title-group">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+            <h3 class="settings-title">Conversion & Compression Settings</h3>
+          </div>
+          <svg class="settings-toggle-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+
+        <div class="settings-body">
+          <!-- Column 1: Compression Presets & Quality -->
+          <div class="setting-group">
+            <div class="setting-label">
+              <span>Quality Presets</span>
+            </div>
+            <div class="presets-grid">
+              <button type="button" class="preset-btn active" data-preset="web">
+                <span>Web Optimized</span>
+                <span class="preset-sub">82% Quality (Best balance)</span>
+              </button>
+              <button type="button" class="preset-btn" data-preset="high">
+                <span>High Fidelity</span>
+                <span class="preset-sub">92% Quality (Crisp details)</span>
+              </button>
+              <button type="button" class="preset-btn" data-preset="compact">
+                <span>Ultra Compact</span>
+                <span class="preset-sub">60% Quality (Smallest size)</span>
+              </button>
+              <button type="button" class="preset-btn" data-preset="lossless">
+                <span>Lossless WebP</span>
+                <span class="preset-sub">100% Exact Pixels</span>
+              </button>
+            </div>
+
+            <div class="slider-container" id="qualitySliderContainer">
+              <div class="setting-label">
+                <span>Compression Quality</span>
+                <span id="qualityValBadge" class="value-badge">82%</span>
+              </div>
+              <input type="range" id="qualitySlider" min="5" max="100" value="82" step="1" />
+            </div>
+
+            <div class="toggle-row">
+              <span style="font-size: 0.9rem; font-weight: 500;">Lossless Mode</span>
+              <label class="switch">
+                <input type="checkbox" id="losslessToggle">
+                <span class="slider-switch"></span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Column 2: Dimensions & Resizing -->
+          <div class="setting-group">
+            <div class="setting-label">
+              <span>Resize Mode</span>
+            </div>
+            <select id="resizeModeSelect" class="custom-select">
+              <option value="original">Keep Original Dimensions</option>
+              <option value="scale">Scale by Percentage (%)</option>
+              <option value="fit">Max Width / Max Height</option>
+            </select>
+
+            <div id="scaleGroup" style="display: none;" class="slider-container">
+              <div class="setting-label">
+                <span>Scale Factor</span>
+                <span id="scaleValBadge" class="value-badge">50%</span>
+              </div>
+              <input type="range" id="scaleSlider" min="10" max="200" value="50" step="5" />
+            </div>
+
+            <div id="fitGroup" style="display: none; gap: 8px; flex-direction: column;">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                <div>
+                  <span style="font-size: 0.75rem; color: var(--text-secondary);">Max Width (px)</span>
+                  <input type="number" id="maxWidthInput" class="custom-input" placeholder="e.g. 1920" />
+                </div>
+                <div>
+                  <span style="font-size: 0.75rem; color: var(--text-secondary);">Max Height (px)</span>
+                  <input type="number" id="maxHeightInput" class="custom-input" placeholder="e.g. 1080" />
+                </div>
+              </div>
+              <span style="font-size: 0.75rem; color: var(--text-muted);">Aspect ratio will always be maintained automatically.</span>
+            </div>
+
+            <div class="toggle-row" style="margin-top: auto;">
+              <span style="font-size: 0.9rem; font-weight: 500;">Auto-Convert on Drop</span>
+              <label class="switch">
+                <input type="checkbox" id="autoConvertToggle" checked>
+                <span class="slider-switch"></span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Column 3: Background & Output Rules -->
+          <div class="setting-group">
+            <div class="setting-label">
+              <span>Alpha / Transparency</span>
+            </div>
+            <select id="backgroundTypeSelect" class="custom-select">
+              <option value="transparent">Preserve Transparent Alpha</option>
+              <option value="white">Fill with Solid White (#FFF)</option>
+              <option value="black">Fill with Solid Black (#000)</option>
+              <option value="custom">Fill with Custom Color</option>
+            </select>
+
+            <div id="customColorGroup" style="display: none; align-items: center; gap: 8px;">
+              <input type="color" id="customColorPicker" value="#FFFFFF" style="width: 44px; height: 36px; border: none; border-radius: 6px; cursor: pointer;" />
+              <input type="text" id="customColorText" class="custom-input" value="#FFFFFF" style="flex: 1;" />
+            </div>
+
+            <div class="setting-label" style="margin-top: 6px;">
+              <span>ZIP File Naming</span>
+            </div>
+            <select id="namingRuleSelect" class="custom-select">
+              <option value="original">filename.webp (Default)</option>
+              <option value="suffix">filename_converted.webp</option>
+              <option value="prefix">converted_filename.webp</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Global Progress Bar -->
+    <div id="globalProgress" class="global-progress-wrapper">
+      <div class="progress-info-row">
+        <span id="progressStatusText">Converting images...</span>
+        <span id="progressPercentText">0%</span>
+      </div>
+      <div class="progress-track">
+        <div id="progressFill" class="progress-fill"></div>
+      </div>
+    </div>
+
+    <!-- Dashboard Bar -->
+    <div id="dashboardBar" class="dashboard-bar" style="display: none;">
+      <div class="stats-grid">
+        <div class="stat-item">
+          <span class="stat-label">Total Files</span>
+          <span id="statTotalCount" class="stat-val">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Original Size</span>
+          <span id="statOrigSize" class="stat-val">0 MB</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">WebP Size</span>
+          <span id="statConvSize" class="stat-val">0 MB</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Total Space Saved</span>
+          <span id="statSavings" class="stat-val savings-highlight">0%</span>
+        </div>
+      </div>
+
+      <div class="batch-actions-group">
+        <button type="button" id="btnConvertAll" class="btn btn-primary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Convert All
+        </button>
+        <button type="button" id="btnDownloadZip" class="btn btn-success" disabled>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2 2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download All (ZIP)
+        </button>
+        <button type="button" id="btnClearAll" class="btn btn-danger btn-sm" title="Clear all files">
+          Clear All
+        </button>
+      </div>
+    </div>
+
+    <!-- Conversion Queue Section -->
+    <section class="queue-section">
+      <div class="queue-header-bar">
+        <div class="queue-title">
+          <span>Conversion Queue</span>
+          <span id="queueCountBadge" class="queue-count-badge">0 items</span>
+        </div>
+
+        <div class="view-controls">
+          <button type="button" id="btnListView" class="view-btn active" title="List View">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+          </button>
+          <button type="button" id="btnGridView" class="view-btn" title="Grid View">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Queue Container -->
+      <div id="queueContainer" class="queue-list">
+        <!-- Empty state placeholder -->
+        <div class="empty-state">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
+            <circle cx="9" cy="9" r="2"/>
+            <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+          </svg>
+          <p>No images added yet. Drop files or upload a folder to get started.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Interactive Comparison Modal -->
+  <div id="comparisonModal" class="modal-overlay">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 id="modalFilename" class="modal-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 16-4 4-4-4"/><path d="M17 20V4"/><path d="m3 8 4-4 4 4"/><path d="M7 4v16"/></svg>
+          Before & After Comparison
+        </h3>
+        <button type="button" id="btnCloseModal" class="btn btn-secondary btn-icon" aria-label="Close modal">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Split Slider Container -->
+        <div id="comparisonWrapper" class="comparison-container">
+          <!-- Original Image (Bottom Layer) -->
+          <div class="comparison-image-wrapper original-layer">
+            <img id="modalImgOrig" src="" alt="Original Image" />
+            <span class="comparison-badge badge-orig">Original</span>
+          </div>
+          <!-- Converted WebP Image (Top Clipped Layer) -->
+          <div id="convertedLayer" class="comparison-image-wrapper converted-layer">
+            <img id="modalImgConv" src="" alt="WebP Converted" />
+            <span class="comparison-badge badge-conv">WebP</span>
+          </div>
+          <!-- Drag Handle -->
+          <div id="sliderHandle" class="comparison-slider-handle">
+            <div class="slider-handle-circle">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-stats-bar">
+          <div class="stat-item">
+            <span class="stat-label">Original Size</span>
+            <span id="modalStatOrigSize" class="stat-val">0 KB</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">WebP Size</span>
+            <span id="modalStatConvSize" class="stat-val">0 KB</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Reduction</span>
+            <span id="modalStatSavings" class="stat-val savings-highlight">0%</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Dimensions</span>
+            <span id="modalStatDimensions" class="stat-val">0 x 0</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" id="modalBtnDownload" class="btn btn-success">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2 2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download WebP
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <script type="module" src="./src/app.js"></script>
+</body>
+</html>
